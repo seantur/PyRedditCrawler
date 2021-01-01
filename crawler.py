@@ -16,8 +16,14 @@ def get_sidebar_subreddits(crawler, subreddit: str):
     print(subreddit)
 
     try:
-        description = " ".join([crawler.subreddit(subreddit).description,
-                                crawler.subreddit(subreddit).public_description])
+        desc = crawler.subreddit(subreddit).description
+        if desc is None:
+            desc = ""
+        public_desc = crawler.subreddit(subreddit).public_description
+        if public_desc is None:
+            public_desc = ""
+
+        description = " ".join([desc, public_desc])
 
     except (prawcore.exceptions.Forbidden,
             prawcore.exceptions.Redirect,
@@ -60,7 +66,7 @@ def main():
         with open(args.to_visit, 'r') as f:
             to_visit = set(json.load(f))
     else:
-        to_visit = set(['personalfinance'])
+        to_visit = set(['microfinance'])
  
     n_iter = 0
     crawler = praw.Reddit("crawler")
